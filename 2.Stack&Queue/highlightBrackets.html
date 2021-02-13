@@ -36,14 +36,14 @@
     </div>
     <script>
         let button = document.getElementById('button');
+        // 括号()高亮的颜色
         let colorList = [
             '#48c4fa', '#e10602', '#771cbd', '#05bd00', '#050505', '#ff4a06'
         ]
+        // 未匹配的字母的颜色
         let defaultColor = '#000000'
-        let errorMsg = '输入有误'
-        let errorFun = (e, errorMsg) => {
-            e.innerHTML = errorMsg;
-        }
+
+        // 高亮渲染函数
         let render = () => {
             let input = document.getElementById('input').value;
             let stack = [];
@@ -87,16 +87,17 @@
             bracketsHtml += '</b>'
             result.innerHTML = bracketsHtml
         }
+        // 进入网页时，聚焦到输入框
         input.focus()
+        // 键盘监听：输入i聚焦到输入框
         document.onkeydown = (event) => {
             var e = event || window.event || arguments.callee.caller.arguments[0];
-            if (e && e.keyCode == 13) {
-                render()
-            }
-            else if (e && e.keyCode == 73) {
+
+            if (e && e.keyCode == 73) {
                 input.focus()
             }
         }
+        // 当输入框内容改变时渲染
         input.oninput = () => {
             render()
         }
