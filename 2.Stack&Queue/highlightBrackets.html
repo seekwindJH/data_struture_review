@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>基于栈的括号高亮</title>
+    <style>
+        #input {
+            outline: none;
+            height: 2.5em;
+        }
+
+
+
+        .container {
+            text-align: center;
+        }
+
+        #result {
+            display: inline-block;
+            margin-top: 1em;
+
+            min-width: 2em;
+            min-height: 1.5em;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <input type="text" id=input autocomplete=off>
+        <br />
+        <span id=result></span>
+    </div>
+    <script>
+        let button = document.getElementById('button');
+        let colorList = [
+            '#48c4fa', '#e10602', '#771cbd', '#05bd00', '#050505', '#ff4a06'
+        ]
+        let defaultColor = '#000000'
+        let errorMsg = '输入有误'
+        let errorFun = (e, errorMsg) => {
+            e.innerHTML = errorMsg;
+        }
+        let render = () => {
+            let input = document.getElementById('input').value;
+            let stack = [];
+            let color = new Array(input.length);
+            let colorListPointer = 0;
+            for (let i = 0; i < input.length; i++) {
+                if (input[i] == '(') {
+                    stack.push(i)
+                }
+                else {
+                    if (stack.length == 0) {
+                        color[i] = colorList.length;
+                    }
+                    else if (input[i] != ')') {
+                        color[i] = colorList.length + 1;
+                    }
+                    else {
+                        color[stack.pop()] = colorListPointer;
+                        color[i] = colorListPointer;
+                        colorListPointer++;
+                        colorListPointer %= colorList.length
+                    }
+                }
+            }
+            // if (stack.length > 0) {
+            //     errorFun(result, errorMsg);
+            //     return;
+            // }
+            let bracketsHtml = '<b>'
+            for (let i = 0; i < input.length; i++) {
+                if (color[i] < colorList.length) {
+                    bracketsHtml += '<font color=' + colorList[color[i]] + '>' + input[i] + '</font>'
+                }
+                else if (color[i] == colorList.length) {
+                    bracketsHtml += '</b><font color=' + defaultColor + '>' + input[i] + '</font><b>'
+                }
+                else {
+                    bracketsHtml += '</b>' + input[i] + '<b>'
+                }
+            }
+            bracketsHtml += '</b>'
+            result.innerHTML = bracketsHtml
+        }
+        input.focus()
+        document.onkeydown = (event) => {
+            var e = event || window.event || arguments.callee.caller.arguments[0];
+            if (e && e.keyCode == 13) {
+                render()
+            }
+            else if (e && e.keyCode == 73) {
+                input.focus()
+            }
+        }
+        input.oninput = () => {
+            render()
+        }
+
+    </script>
+</body>
+
+</html>
